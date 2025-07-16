@@ -21,19 +21,12 @@ function LeafletMap({ incidents, selectedIncident, onMarkerClick }) {
   const [activeIncident, setActiveIncident] = useState(null);
   const defaultPosition = [30, 0];
 
-  // --- NEW DEBUGGING LOG ---
-  // Let's inspect the very first incident when the data arrives
-  if (incidents.length > 0) {
-    console.log("Inspecting first incident for map:", incidents[0]);
-    console.log("Type of latitude:", typeof incidents[0].latitude);
-    console.log("Type of longitude:", typeof incidents[0].longitude);
-  }
-
   return (
     <MapContainer center={defaultPosition} zoom={2} style={{ height: '100%', width: '100%' }}>
+      {/* NEW: Using the CARTO "Positron" light grey tile layer */}
       <TileLayer
-        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-        url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+        attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>'
+        url="https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png"
       />
 
       {selectedIncident && (
@@ -41,15 +34,20 @@ function LeafletMap({ incidents, selectedIncident, onMarkerClick }) {
       )}
 
       {incidents.map(incident => {
-        // This defensive check is still important
         if (typeof incident.latitude !== 'number' || typeof incident.longitude !== 'number') {
           return null;
         }
+        
+        const isSelected = selectedIncident?.id === incident.id;
+        const scale = calculateMarkerRadius(incident.capacity_mw);
+
+        // NEW: Default marker is now grey, selected is red
+        const markerColor = isSelected ? '#dc3545' : '#555555';
 
         const icon = L.divIcon({
-          html: `<svg viewBox="0 0 24 24" width="${calculateMarkerRadius(incident.capacity_mw) * 2}" height="${calculateMarkerRadius(incident.capacity_mw) * 2}"><circle cx="12" cy="12" r="10" fill="${selectedIncident?.id === incident.id ? '#ff0000' : '#007bff'}" fill-opacity="0.8" stroke="white" stroke-width="2"/></svg>`,
+          html: `<svg viewBox="0 0 24 24" width="${scale * 2}" height="${scale * 2}"><circle cx="12" cy="12" r="10" fill="${markerColor}" fill-opacity="0.8" stroke="white" stroke-width="2"/></svg>`,
           className: '',
-          iconSize: [calculateMarkerRadius(incident.capacity_mw) * 2, calculateMarkerRadius(incident.capacity_mw) * 2],
+          iconSize: [scale * 2, scale * 2],
         });
 
         return (

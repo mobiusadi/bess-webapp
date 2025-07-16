@@ -63,14 +63,18 @@ function DashboardPage({ incidents }) {
   
   const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042', '#AF19FF', '#DC3545', '#8E44AD'];
 
+ // In DashboardPage.js
+// ...
+
   const dataForBarChart = {
     labels: barChartData.map(d => d.name),
     datasets: [{
       label: '# of Incidents',
       data: barChartData.map(d => d.incidents),
-      backgroundColor: 'rgba(220, 53, 69, 0.7)',
+      backgroundColor: 'rgba(52, 73, 94, 0.8)', // New dark grey for the bars
     }],
   };
+//...
   
   const dataForDonutChart = {
     labels: donutChartData.map(d => d.name),

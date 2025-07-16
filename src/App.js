@@ -1,9 +1,7 @@
 import React, { useState, useEffect, useCallback } from 'react';
-// THIS IS THE FIX: Added BrowserRouter to the import list
 import { BrowserRouter, Routes, Route, Link, useLocation } from 'react-router-dom'; 
 import { AuthProvider, useAuth } from './AuthContext';
 
-// Import all your components
 import MapView from './components/MapView';
 import DashboardPage from './components/DashboardPage';
 import AdminPage from './components/AdminPage';
@@ -14,11 +12,9 @@ import CardGridView from './components/CardGridView';
 import DataTablePage from './components/DataTablePage';
 import LoginPage from './components/LoginPage';
 import ProtectedRoute from './components/ProtectedRoute';
-
 import { supabase } from './supabaseClient';
 import './App.css';
 
-// Import new icons
 import sunIcon from './assets/icon-sun.png';
 import moonIcon from './assets/icon-moon.png';
 
@@ -27,7 +23,7 @@ function App() {
   const [isLoading, setIsLoading] = useState(true);
   const [isNightMode, setIsNightMode] = useState(true);
   const location = useLocation();
-  const auth = useAuth(); // Access auth state for logout button
+  const auth = useAuth();
 
   const getIncidents = useCallback(async () => {
     setIsLoading(true);
@@ -60,7 +56,6 @@ function App() {
               <img src={isNightMode ? sunIcon : moonIcon} alt="Toggle Day/Night" />
             </button>
           )}
-          {/* Show logout button if user is authenticated */}
           {auth.isAuthenticated && <button onClick={auth.logout} className="logout-button">Logout</button>}
         </div>
       </header>
@@ -73,7 +68,6 @@ function App() {
             <Route path="/table" element={<DataTablePage incidents={incidents} />} />
             <Route path="/dashboard" element={<DashboardPage incidents={incidents} />} />
             <Route path="/login" element={<LoginPage />} />
-
             <Route path="/admin" element={<ProtectedRoute><AdminPage incidents={incidents} /></ProtectedRoute>} />
             <Route path="/admin/edit/:id" element={<ProtectedRoute><EditIncidentForm onSave={getIncidents} /></ProtectedRoute>} />
             <Route path="/admin/new" element={<ProtectedRoute><AddIncidentForm onSave={getIncidents} /></ProtectedRoute>} />
@@ -84,7 +78,6 @@ function App() {
   );
 }
 
-// We wrap the App in the router AND the auth provider
 function AppWrapper() {
   return (
     <BrowserRouter>

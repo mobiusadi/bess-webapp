@@ -1,26 +1,23 @@
-// src/components/GlobeView.js
 import React from 'react';
 import Globe from 'react-globe.gl';
 
-const day_texture = "//unpkg.com/three-globe/example/img/earth-day.jpg";
-const night_texture = "//unpkg.com/three-globe/example/img/earth-night.jpg";
-
-// The component now receives the isNightMode prop
-function GlobeView({ incidents, isNightMode }) {
+function GlobeView({ incidents }) {
   const globeData = incidents
     .filter(d => d.latitude && d.longitude)
-    .map(incident => ({
-      lat: incident.latitude,
-      lng: incident.longitude,
-      size: incident.capacity_mw ? 0.1 + Math.log(incident.capacity_mw + 1) / 10 : 0.1,
-      color: 'red',
-      name: incident.location,
+    .map(d => ({
+      lat: d.latitude,
+      lng: d.longitude,
+      size: d.capacity_mw ? 0.1 + Math.log(d.capacity_mw + 1) / 10 : 0.1,
+      color: '#dc3545',
+      name: d.location,
     }));
 
   return (
+    // This div gets the 'full-page-view' style which now has the correct height and position
     <div className="full-page-view">
       <Globe
-        globeImageUrl={isNightMode ? night_texture : day_texture}
+        globeImageUrl="//unpkg.com/three-globe/example/img/earth-day.jpg"
+        backgroundColor="rgba(255,255,255,1)"
         pointsData={globeData}
         pointAltitude="size"
         pointColor="color"
